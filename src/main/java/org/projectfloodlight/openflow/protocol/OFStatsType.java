@@ -47,5 +47,6 @@ public enum OFStatsType {
      FLOW_MONITOR,
      FLOW_LIGHTWEIGHT,
      CONTROLLER_STATUS,
-     BUNDLE_FEATURES;
+     BUNDLE_FEATURES,
+     WPARAMS;
 }
