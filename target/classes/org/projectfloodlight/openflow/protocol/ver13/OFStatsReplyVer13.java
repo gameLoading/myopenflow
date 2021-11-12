@@ -98,9 +98,13 @@ abstract class OFStatsReplyVer13 {
                case (short) 0xd:
                    // discriminator value OFStatsType.PORT_DESC=13 for class OFPortDescStatsReplyVer13
                    return OFPortDescStatsReplyVer13.READER.readFrom(bb);
+                case (short) 0x15:
+                    // discriminator value OFStatsType.WPARMS=21
+                    return OFWparamsStatsReplyVer13.READER.readFrom(bb);
                case (short) 0xc:
                    // discriminator value OFStatsType.TABLE_FEATURES=12 for class OFTableFeaturesStatsReplyVer13
                    return OFTableFeaturesStatsReplyVer13.READER.readFrom(bb);
+
                default:
                    throw new OFParseError("Unknown value for discriminator statsType of class OFStatsReplyVer13: " + statsType);
             }
