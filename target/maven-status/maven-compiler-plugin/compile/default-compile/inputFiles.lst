@@ -190,6 +190,7 @@
 /home/user/onos/lib/myopenflow/src/main/java/org/projectfloodlight/openflow/protocol/ver11/OFGroupDescStatsRequestVer11.java
 /home/user/onos/lib/myopenflow/src/main/java/org/projectfloodlight/openflow/protocol/OFBsnAnchor.java
 /home/user/onos/lib/myopenflow/src/main/java/org/projectfloodlight/openflow/protocol/ver13/OFInstructionWriteActionsVer13.java
+/home/user/onos/lib/myopenflow/src/main/java/org/projectfloodlight/openflow/protocol/OFWparamsStatsReply.java
 /home/user/onos/lib/myopenflow/src/main/java/org/projectfloodlight/openflow/protocol/ver13/OFPacketInReasonSerializerVer13.java
 /home/user/onos/lib/myopenflow/src/main/java/org/projectfloodlight/openflow/protocol/ver13/OFBsnTlvUnicastRateVer13.java
 /home/user/onos/lib/myopenflow/src/main/java/org/projectfloodlight/openflow/protocol/ver12/OFNiciraHeaderVer12.java
@@ -2743,6 +2744,7 @@
 /home/user/onos/lib/myopenflow/src/main/java/org/projectfloodlight/openflow/protocol/ver14/OFPortFeaturesSerializerVer14.java
 /home/user/onos/lib/myopenflow/src/main/java/org/projectfloodlight/openflow/protocol/ver11/OFInstructionVer11.java
 /home/user/onos/lib/myopenflow/src/main/java/org/projectfloodlight/openflow/protocol/ver13/OFInstructionBsnAutoNegotiationVer13.java
+/home/user/onos/lib/myopenflow/src/main/java/org/projectfloodlight/openflow/protocol/OFWparamsStatsRequest.java
 /home/user/onos/lib/myopenflow/src/main/java/org/projectfloodlight/openflow/protocol/ver14/OFGroupStatsReplyVer14.java
 /home/user/onos/lib/myopenflow/src/main/java/org/projectfloodlight/openflow/protocol/bsntlv/OFBsnTlvVlanVid.java
 /home/user/onos/lib/myopenflow/src/main/java/org/projectfloodlight/openflow/protocol/ver15/OFBsnSetPktinSuppressionRequestVer15.java

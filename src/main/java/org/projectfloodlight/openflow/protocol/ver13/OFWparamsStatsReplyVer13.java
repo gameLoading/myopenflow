@@ -39,12 +39,14 @@ public class OFWparamsStatsReplyVer13 implements OFStatsReply {
     }
 
     public OFType getType() {
-        return OFType.STATS_REQUEST;
+        return OFType.STATS_REPLY;
     }
 
     public long getXid() {
         return this.xid;
     }
+
+    public String getData() { return this.data; }
 
     @Override
     public OFStatsType getStatsType() { return OFStatsType.WPARAMS; }
@@ -206,7 +208,7 @@ public class OFWparamsStatsReplyVer13 implements OFStatsReply {
         }
 
         public OFType getType() {
-            return OFType.TXPOWER_GET_REQUEST;
+            return OFType.STATS_REPLY;
         }
 
         public long getXid() {

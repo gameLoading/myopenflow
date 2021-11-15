@@ -16,7 +16,7 @@ import org.projectfloodlight.openflow.util.FunnelUtils;
 
 import java.util.Set;
 
-public class OFWparamsStatsRequestVer13 implements OFStatsRequest {
+public class OFWparamsStatsRequestVer13 implements OFWparamsStatsRequest {
     private static final long DEFAULT_XID = 0L;
     private final static Set<OFStatsRequestFlags> DEFAULT_FLAGS = ImmutableSet.<OFStatsRequestFlags>of();
 
@@ -25,6 +25,10 @@ public class OFWparamsStatsRequestVer13 implements OFStatsRequest {
     static final OFWparamsStatsRequestVer13.Reader READER;
     static final OFWparamsStatsRequestVer13.OFWparamsStatsRequestVer13Funnel FUNNEL;
     static final OFWparamsStatsRequestVer13.Writer WRITER;
+
+    OFWparamsStatsRequestVer13(long xid) {
+        this.xid = xid;
+    }
 
     OFWparamsStatsRequestVer13(long xid, Set<OFStatsRequestFlags> flags) {
         this.xid = xid;
@@ -62,8 +66,8 @@ public class OFWparamsStatsRequestVer13 implements OFStatsRequest {
     }
 
     @Override
-    public OFStatsRequest.Builder createBuilder() {
-        return new OFWparamsStatsRequestVer13.Builder();
+    public OFWparamsStatsRequest.Builder createBuilder() {
+        return new BuilderWithParent(this);
     }
 
     public static OFMessage.Builder builder() {
@@ -85,15 +89,32 @@ public class OFWparamsStatsRequestVer13 implements OFStatsRequest {
         return xid == that.xid;
     }
 
+    @Override
     public boolean equalsIgnoreXid(Object obj) {
-        return this.equals(obj);
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        OFWparamsStatsRequestVer13 other = (OFWparamsStatsRequestVer13) obj;
+
+        // ignore XID
+        if (flags == null) {
+            if (other.flags != null)
+                return false;
+        } else if (!flags.equals(other.flags))
+            return false;
+        return true;
     }
 
+    @Override
     public int hashCode() {
         int result = 31 * (int) (this.xid ^ this.xid >>> 32);
         return result;
     }
 
+    @Override
     public int hashCodeIgnoreXid() {
         return this.hashCode();
     }
@@ -105,9 +126,6 @@ public class OFWparamsStatsRequestVer13 implements OFStatsRequest {
     }
 
     static class Writer implements OFMessageWriter<OFWparamsStatsRequestVer13> {
-        Writer() {
-        }
-
         public void write(ByteBuf bb, OFWparamsStatsRequestVer13 message) {
             int startIndex = bb.writerIndex();
             // versiosn openflow 1.3
@@ -119,7 +137,7 @@ public class OFWparamsStatsRequestVer13 implements OFStatsRequest {
             // xid
             bb.writeInt(U32.t(message.xid));
             // subType = WPARAMS
-            bb.writeShort(OFStatsType.WPARAMS.ordinal());
+            bb.writeShort(21);
             OFStatsRequestFlagsSerializerVer13.writeTo(bb, message.flags);
             // pad: 4 bytes
             bb.writeZero(4);
@@ -145,8 +163,8 @@ public class OFWparamsStatsRequestVer13 implements OFStatsRequest {
             //xid
             sink.putLong(message.xid);
 
-            //sub type
-            sink.putShort((short) OFStatsType.WPARAMS.ordinal());
+            //sub type : OFStatsType.WPARAMS.ordinal()
+            sink.putShort((short) 21);
             OFStatsRequestFlagsSerializerVer13.putTo(message.flags, sink);
         }
     }
@@ -186,8 +204,9 @@ public class OFWparamsStatsRequestVer13 implements OFStatsRequest {
         }
     }
 
-    static class Builder implements OFStatsRequest.Builder {
+    static class Builder implements OFWparamsStatsRequest.Builder {
         private long xid;
+        private boolean xidSet;
         private Set<OFStatsRequestFlags> flags = DEFAULT_FLAGS;
         private boolean flagsSet = true;
 
@@ -208,6 +227,7 @@ public class OFWparamsStatsRequestVer13 implements OFStatsRequest {
 
         public OFWparamsStatsRequestVer13.Builder setXid(long xid) {
             this.xid = xid;
+            this.xidSet = true;
             return this;
         }
 
@@ -222,13 +242,71 @@ public class OFWparamsStatsRequestVer13 implements OFStatsRequest {
         }
 
         @Override
-        public OFStatsRequest.Builder setFlags(Set set) {
+        public OFWparamsStatsRequest.Builder setFlags(Set set) {
             this.flags = set;
             this.flagsSet = true;
             return this;
         }
 
-        public OFWparamsStatsRequestVer13 build() {
+        public OFWparamsStatsRequest build() {
+            long xid = this.xidSet ? this.xid : DEFAULT_XID;
+            Set<OFStatsRequestFlags> flags = this.flagsSet ? this.flags : DEFAULT_FLAGS;
+            if (flags == null)
+                throw new NullPointerException("Property flags must not be null");
+            return new OFWparamsStatsRequestVer13(xid, flags);
+        }
+    }
+
+    static class BuilderWithParent implements OFWparamsStatsRequest.Builder {
+        final OFWparamsStatsRequestVer13 parentMessage;
+
+        private long xid;
+        private boolean xidSet;
+        private Set<OFStatsRequestFlags> flags = DEFAULT_FLAGS;
+        private boolean flagsSet = true;
+
+        BuilderWithParent(OFWparamsStatsRequestVer13 parentMessage) { this.parentMessage = parentMessage; }
+
+        public OFVersion getVersion() {
+            return OFVersion.OF_13;
+        }
+
+        public OFType getType() {
+            return OFType.TXPOWER_GET_REQUEST;
+        }
+
+        public long getXid() {
+            return this.xid;
+        }
+
+        public OFWparamsStatsRequest.Builder setXid(long xid) {
+            this.xid = xid;
+            this.xidSet = true;
+            return this;
+        }
+
+        @Override
+        public OFStatsType getStatsType() {
+            return OFStatsType.WPARAMS;
+        }
+
+        @Override
+        public Set<OFStatsRequestFlags> getFlags() {
+            return flags;
+        }
+
+        @Override
+        public OFWparamsStatsRequest.Builder setFlags(Set set) {
+            this.flags = set;
+            this.flagsSet = true;
+            return this;
+        }
+
+        public OFWparamsStatsRequest build() {
+            long xid = this.xidSet ? this.xid : parentMessage.xid;
+            Set<OFStatsRequestFlags> flags = this.flagsSet ? this.flags : parentMessage.flags;
+            if (flags == null)
+                throw new NullPointerException("Property flags must not be null");
             return new OFWparamsStatsRequestVer13(xid, flags);
         }
     }

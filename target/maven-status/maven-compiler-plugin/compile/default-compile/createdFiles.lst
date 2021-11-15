@@ -2723,6 +2723,7 @@ org/projectfloodlight/openflow/protocol/ver14/OFBsnTlvVlanVidVer14$Reader.class
 org/projectfloodlight/openflow/protocol/ver12/OFOxmBsnUdf4Ver12.class
 org/projectfloodlight/openflow/protocol/ver14/OFBsnTlvMacVer14$Writer.class
 org/projectfloodlight/openflow/protocol/ver14/OFBsnPduRxRequestVer14$OFBsnPduRxRequestVer14Funnel.class
+org/projectfloodlight/openflow/protocol/OFWparamsStatsRequest$Builder.class
 org/projectfloodlight/openflow/protocol/OFObject.class
 org/projectfloodlight/openflow/protocol/ver14/OFBsnTlvGenerationIdVer14$OFBsnTlvGenerationIdVer14Funnel.class
 org/projectfloodlight/openflow/protocol/ver13/OFSetConfigVer13.class
@@ -6153,6 +6154,7 @@ org/projectfloodlight/openflow/protocol/ver15/OFActionIdPushPbbVer15$OFActionIdP
 org/projectfloodlight/openflow/protocol/ver14/OFPortModPropEthernetVer14$Writer.class
 org/projectfloodlight/openflow/protocol/ver14/OFBsnTlvBroadcastRateVer14$Writer.class
 org/projectfloodlight/openflow/protocol/ver10/OFBsnHeaderVer10.class
+org/projectfloodlight/openflow/protocol/ver13/OFWparamsStatsRequestVer13$BuilderWithParent.class
 org/projectfloodlight/openflow/protocol/ver14/OFGroupModFailedCodeSerializerVer14$1.class
 org/projectfloodlight/openflow/protocol/OFRoleReply.class
 org/projectfloodlight/openflow/protocol/ver15/OFBsnLacpConvergenceNotifVer15.class
@@ -17182,6 +17184,7 @@ org/projectfloodlight/openflow/protocol/ver13/OFActionExperimenterVer13$Reader.c
 org/projectfloodlight/openflow/protocol/ver11/OFActionPopMplsVer11.class
 org/projectfloodlight/openflow/protocol/ver13/OFHelloElemVersionbitmapVer13$Builder.class
 org/projectfloodlight/openflow/protocol/ver13/OFBsnSwitchPipelineStatsRequestVer13$OFBsnSwitchPipelineStatsRequestVer13Funnel.class
+org/projectfloodlight/openflow/protocol/OFWparamsStatsRequest.class
 org/projectfloodlight/openflow/protocol/ver13/OFBsnPduTxRequestVer13$OFBsnPduTxRequestVer13Funnel.class
 org/projectfloodlight/openflow/protocol/OFFlowModify.class
 org/projectfloodlight/openflow/protocol/ver11/OFDescStatsRequestVer11$Writer.class
@@ -17641,6 +17644,7 @@ org/projectfloodlight/openflow/protocol/OFBsnGentableEntryStatsReply$Builder.cla
 org/projectfloodlight/openflow/protocol/OFAsyncConfigPropExperimenterSlave.class
 org/projectfloodlight/openflow/protocol/ver10/OFBarrierRequestVer10$Builder.class
 org/projectfloodlight/openflow/protocol/ver13/OFBsnTlvUdpSrcVer13.class
+org/projectfloodlight/openflow/protocol/OFWparamsStatsReply$Builder.class
 org/projectfloodlight/openflow/protocol/ver14/OFInstructionIdBsnDenyVer14$OFInstructionIdBsnDenyVer14Funnel.class
 org/projectfloodlight/openflow/protocol/ver15/OFFlowLightweightStatsReplyVer15.class
 org/projectfloodlight/openflow/protocol/ver12/OFInstructionExperimenterVer12$Reader.class
@@ -18418,6 +18422,7 @@ org/projectfloodlight/openflow/protocol/ver10/OFFlowAddVer10$OFFlowAddVer10Funne
 org/projectfloodlight/openflow/protocol/ver14/OFBsnTlvNexthopTypeVxlanVer14$Reader.class
 org/projectfloodlight/openflow/protocol/ver15/OFAsyncConfigPropFlowStatsSlaveVer15$Reader.class
 org/projectfloodlight/openflow/protocol/ver13/OFBsnControllerConnectionsRequestVer13$OFBsnControllerConnectionsRequestVer13Funnel.class
+org/projectfloodlight/openflow/protocol/OFWparamsStatsReply.class
 org/projectfloodlight/openflow/protocol/ver12/OFOxmArpShaVer12.class
 org/projectfloodlight/openflow/protocol/ver11/OFBsnBwEnableGetRequestVer11.class
 org/projectfloodlight/openflow/protocol/ver14/OFOxmBsnInPorts512MaskedVer14$Writer.class
