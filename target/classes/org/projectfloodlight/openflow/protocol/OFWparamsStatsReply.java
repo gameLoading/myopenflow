@@ -36,6 +36,8 @@ public interface OFWparamsStatsReply extends OFObject, OFStatsReply {
     long getXid();
     OFStatsType getStatsType();
     Set<OFStatsReplyFlags> getFlags();
+    OFWparamsStatsType getWparamsStatsType();
+    String getTargetDevice();
 
     void writeTo(ByteBuf channelBuffer);
 
@@ -48,6 +50,10 @@ public interface OFWparamsStatsReply extends OFObject, OFStatsReply {
         Builder setXid(long xid);
         OFStatsType getStatsType();
         Set<OFStatsReplyFlags> getFlags();
+        OFWparamsStatsType getWparamsStatsType();
         Builder setFlags(Set<OFStatsReplyFlags> flags);
+        Builder setWparamsStatsType(OFWparamsStatsType wparamsType);
+        String getTargetDevice();
+        Builder setTargetDevice(String deviceName);
     }
 }

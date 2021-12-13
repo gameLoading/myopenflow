@@ -14,25 +14,27 @@ import org.projectfloodlight.openflow.types.U32;
 import org.projectfloodlight.openflow.util.ChannelUtils;
 import org.projectfloodlight.openflow.util.FunnelUtils;
 
+import java.util.Arrays;
 import java.util.Set;
 
-public class OFWparamsStatsRequestVer13 implements OFWparamsStatsRequest {
+class OFWparamsStatsRequestVer13 implements OFWparamsStatsRequest {
     private static final long DEFAULT_XID = 0L;
     private final static Set<OFStatsRequestFlags> DEFAULT_FLAGS = ImmutableSet.<OFStatsRequestFlags>of();
+    private final static OFWparamsStatsType  DEFAULT_WPARMS = OFWparamsStatsType .DEVICES;
 
     private long xid = DEFAULT_XID;
+    private OFWparamsStatsType  wparamsType = DEFAULT_WPARMS;
     private Set<OFStatsRequestFlags> flags = DEFAULT_FLAGS;
+    private String targetDevice = null;
+
     static final OFWparamsStatsRequestVer13.Reader READER;
     static final OFWparamsStatsRequestVer13.OFWparamsStatsRequestVer13Funnel FUNNEL;
     static final OFWparamsStatsRequestVer13.Writer WRITER;
 
-    OFWparamsStatsRequestVer13(long xid) {
+    OFWparamsStatsRequestVer13(long xid, OFWparamsStatsType  wparamsType, String targetDevice) {
         this.xid = xid;
-    }
-
-    OFWparamsStatsRequestVer13(long xid, Set<OFStatsRequestFlags> flags) {
-        this.xid = xid;
-        this.flags = flags;
+        this.wparamsType = wparamsType;
+        this.targetDevice = targetDevice;
     }
 
     public OFVersion getVersion() {
@@ -57,6 +59,16 @@ public class OFWparamsStatsRequestVer13 implements OFWparamsStatsRequest {
         return flags;
     }
 
+    @Override
+    public OFWparamsStatsType  getWparamsStatsType () {
+        return wparamsType;
+    }
+
+    @Override
+    public String getTargetDevice() {
+        return targetDevice;
+    }
+
     public void putTo(PrimitiveSink sink) {
         FUNNEL.funnel(this, sink);
     }
@@ -67,7 +79,7 @@ public class OFWparamsStatsRequestVer13 implements OFWparamsStatsRequest {
 
     @Override
     public OFWparamsStatsRequest.Builder createBuilder() {
-        return new BuilderWithParent(this);
+        return new Builder();
     }
 
     public static OFMessage.Builder builder() {
@@ -132,15 +144,34 @@ public class OFWparamsStatsRequestVer13 implements OFWparamsStatsRequest {
             bb.writeByte(4);
             // of type : 18
             bb.writeByte(18);
-            // length = 16
-            bb.writeShort(16);
+            // length = 16 + 21 + 3 = 37
+            bb.writeShort(40);
             // xid
             bb.writeInt(U32.t(message.xid));
             // subType = WPARAMS
             bb.writeShort(21);
             OFStatsRequestFlagsSerializerVer13.writeTo(bb, message.flags);
-            // pad: 4 bytes
+            // pad: 3 bytes
             bb.writeZero(4);
+            // wparamsType
+            bb.writeByte(message.wparamsType.ordinal());
+            // targetDevice
+            if (message.targetDevice == null){
+                byte []bytes = new byte[20];
+                Arrays.fill(bytes, (byte) 0);
+                bb.writeBytes(bytes);
+            }else{
+                try {
+                    byte []bytes = message.targetDevice.getBytes("UTF-8");
+                    bb.writeBytes(Arrays.copyOf(bytes, 20));
+                }catch (Exception e){
+                    byte []bytes = new byte[20];
+                    Arrays.fill(bytes, (byte) 0);
+                    bb.writeBytes(bytes);
+                }
+            }
+            // pad: 3 bytes
+            bb.writeZero(3);
         }
     }
 
@@ -166,6 +197,7 @@ public class OFWparamsStatsRequestVer13 implements OFWparamsStatsRequest {
             //sub type : OFStatsType.WPARAMS.ordinal()
             sink.putShort((short) 21);
             OFStatsRequestFlagsSerializerVer13.putTo(message.flags, sink);
+            sink.putByte((byte) message.wparamsType.ordinal());
         }
     }
 
@@ -196,8 +228,24 @@ public class OFWparamsStatsRequestVer13 implements OFWparamsStatsRequest {
                             throw new OFParseError("Wrong statsType: Expected=OFStatsType.WPARAMS(22), got=" + statsType);
                         Set<OFStatsRequestFlags> flags = OFStatsRequestFlagsSerializerVer13.readFrom(bb);
                         bb.skipBytes(4);
-                        OFWparamsStatsRequestVer13 msg = new OFWparamsStatsRequestVer13(xid, flags);
-                        return msg;
+
+                        byte wparmsType = bb.readByte();
+                        if (!(OFWparamsStatsType .DEVICES.ordinal() <= wparmsType && wparmsType <= OFWparamsStatsType .INFOS.ordinal()))
+                            throw new OFParseError("Wrong wparamsType: got=" + wparmsType);
+
+                        String targetDevice = null;
+                        if (wparmsType != OFWparamsStatsType .DEVICES.ordinal()) {
+                            byte[] bytes = new byte[20];
+                            bb.readBytes(bytes);
+                            try{
+                                targetDevice = new String(bytes, "UTF-8");
+                                return new OFWparamsStatsRequestVer13(xid, OFWparamsStatsType .values()[wparmsType], targetDevice);
+                            }catch (Exception e){
+                                throw new OFParseError("Wrong targetDevice="+e.toString());
+                            }
+                        }else{
+                            return new OFWparamsStatsRequestVer13(xid, OFWparamsStatsType .values()[wparmsType], null);
+                        }
                     }
                 }
             }
@@ -209,16 +257,15 @@ public class OFWparamsStatsRequestVer13 implements OFWparamsStatsRequest {
         private boolean xidSet;
         private Set<OFStatsRequestFlags> flags = DEFAULT_FLAGS;
         private boolean flagsSet = true;
-
-        Builder() {
-        }
+        private OFWparamsStatsType  wparamsType = DEFAULT_WPARMS;
+        private String targetDevice = null;
 
         public OFVersion getVersion() {
             return OFVersion.OF_13;
         }
 
         public OFType getType() {
-            return OFType.TXPOWER_GET_REQUEST;
+            return OFType.STATS_REQUEST;
         }
 
         public long getXid() {
@@ -242,6 +289,28 @@ public class OFWparamsStatsRequestVer13 implements OFWparamsStatsRequest {
         }
 
         @Override
+        public OFWparamsStatsType  getWparamsStatsType () {
+            return wparamsType;
+        }
+
+        @Override
+        public OFWparamsStatsRequest.Builder setWparamsStatsType (OFWparamsStatsType  wparamsType) {
+            this.wparamsType = wparamsType;
+            return this;
+        }
+
+        @Override
+        public String getTargetDevice() {
+            return targetDevice;
+        }
+
+        @Override
+        public OFWparamsStatsRequest.Builder setTargetDevice(String deviceName) {
+            this.targetDevice = deviceName;
+            return this;
+        }
+
+        @Override
         public OFWparamsStatsRequest.Builder setFlags(Set set) {
             this.flags = set;
             this.flagsSet = true;
@@ -253,61 +322,8 @@ public class OFWparamsStatsRequestVer13 implements OFWparamsStatsRequest {
             Set<OFStatsRequestFlags> flags = this.flagsSet ? this.flags : DEFAULT_FLAGS;
             if (flags == null)
                 throw new NullPointerException("Property flags must not be null");
-            return new OFWparamsStatsRequestVer13(xid, flags);
-        }
-    }
 
-    static class BuilderWithParent implements OFWparamsStatsRequest.Builder {
-        final OFWparamsStatsRequestVer13 parentMessage;
-
-        private long xid;
-        private boolean xidSet;
-        private Set<OFStatsRequestFlags> flags = DEFAULT_FLAGS;
-        private boolean flagsSet = true;
-
-        BuilderWithParent(OFWparamsStatsRequestVer13 parentMessage) { this.parentMessage = parentMessage; }
-
-        public OFVersion getVersion() {
-            return OFVersion.OF_13;
-        }
-
-        public OFType getType() {
-            return OFType.TXPOWER_GET_REQUEST;
-        }
-
-        public long getXid() {
-            return this.xid;
-        }
-
-        public OFWparamsStatsRequest.Builder setXid(long xid) {
-            this.xid = xid;
-            this.xidSet = true;
-            return this;
-        }
-
-        @Override
-        public OFStatsType getStatsType() {
-            return OFStatsType.WPARAMS;
-        }
-
-        @Override
-        public Set<OFStatsRequestFlags> getFlags() {
-            return flags;
-        }
-
-        @Override
-        public OFWparamsStatsRequest.Builder setFlags(Set set) {
-            this.flags = set;
-            this.flagsSet = true;
-            return this;
-        }
-
-        public OFWparamsStatsRequest build() {
-            long xid = this.xidSet ? this.xid : parentMessage.xid;
-            Set<OFStatsRequestFlags> flags = this.flagsSet ? this.flags : parentMessage.flags;
-            if (flags == null)
-                throw new NullPointerException("Property flags must not be null");
-            return new OFWparamsStatsRequestVer13(xid, flags);
+            return new OFWparamsStatsRequestVer13(xid, wparamsType, targetDevice);
         }
     }
 }

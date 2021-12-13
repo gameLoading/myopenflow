@@ -34,6 +34,8 @@ public interface OFWparamsStatsRequest extends OFObject, OFStatsRequest<OFWparam
     long getXid();
     OFStatsType getStatsType();
     Set<OFStatsRequestFlags> getFlags();
+    OFWparamsStatsType getWparamsStatsType();
+    String getTargetDevice();
 
     void writeTo(ByteBuf channelBuffer);
 
@@ -46,6 +48,10 @@ public interface OFWparamsStatsRequest extends OFObject, OFStatsRequest<OFWparam
         Builder setXid(long xid);
         OFStatsType getStatsType();
         Set<OFStatsRequestFlags> getFlags();
+        OFWparamsStatsType getWparamsStatsType();
+        Builder setWparamsStatsType(OFWparamsStatsType wparamsType);
         Builder setFlags(Set<OFStatsRequestFlags> flags);
+        String getTargetDevice();
+        OFWparamsStatsRequest.Builder setTargetDevice(String deviceName);
     }
 }

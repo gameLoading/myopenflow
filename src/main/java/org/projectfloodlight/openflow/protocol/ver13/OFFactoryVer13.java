@@ -66,12 +66,16 @@ public class OFFactoryVer13 implements OFFactory {
         return OFOxssVer13.INSTANCE;
     }
 
-    public OFWparamsStatsRequestVer13 buildWparamsStatsRequest() {
-        return new OFWparamsStatsRequestVer13(nextXid());
+    public OFWparamsStatsRequest.Builder buildWparamsStatsRequest() {
+        return new OFWparamsStatsRequestVer13.Builder().setXid(nextXid());
     }
 
     public OFAggregateStatsReply.Builder buildAggregateStatsReply() {
         return new OFAggregateStatsReplyVer13.Builder().setXid(nextXid());
+    }
+
+    public OFWparamsConfig.Builder buildOFWparamsConfig() {
+        return new OFWparamsConfigVer13.Builder().setXid(nextXid());
     }
 
     public OFAggregateStatsRequest.Builder buildAggregateStatsRequest() {

@@ -16,21 +16,26 @@ import org.projectfloodlight.openflow.util.FunnelUtils;
 
 import java.util.Set;
 
-public class OFWparamsStatsReplyVer13 implements OFStatsReply {
+public class OFWparamsStatsReplyVer13 implements OFWparamsStatsReply {
     private static final long DEFAULT_XID = 0L;
     private final static Set<OFStatsReplyFlags> DEFAULT_FLAGS = ImmutableSet.<OFStatsReplyFlags>of();
+    private final static OFWparamsStatsType DEFAULT_WPARMS = OFWparamsStatsType .DEVICES;
 
     private long xid = DEFAULT_XID;
     private Set<OFStatsReplyFlags> flags = DEFAULT_FLAGS;
     private String data = null;
+    private OFWparamsStatsType wparamsType = DEFAULT_WPARMS;
+    private String targetDevice = null;
 
     static final OFWparamsStatsReplyVer13.Reader READER;
     static final OFWparamsStatsReplyVer13.OFWparamsStatsReplyVer13Funnel FUNNEL;
     static final OFWparamsStatsReplyVer13.Writer WRITER;
 
-    OFWparamsStatsReplyVer13(long xid, Set<OFStatsReplyFlags> flags, String data) {
+    OFWparamsStatsReplyVer13(long xid, OFWparamsStatsType wparamsType, String targetDevice, String data) {
         this.xid = xid;
         this.flags = flags;
+        this.wparamsType = wparamsType;
+        this.targetDevice = targetDevice;
         this.data = new String(data);
     }
 
@@ -54,6 +59,16 @@ public class OFWparamsStatsReplyVer13 implements OFStatsReply {
     @Override
     public Set<OFStatsReplyFlags> getFlags() { return flags; }
 
+    @Override
+    public OFWparamsStatsType getWparamsStatsType () {
+        return wparamsType;
+    }
+
+    @Override
+    public String getTargetDevice() {
+        return targetDevice;
+    }
+
     public void putTo(PrimitiveSink sink) {
         FUNNEL.funnel(this, sink);
     }
@@ -62,8 +77,8 @@ public class OFWparamsStatsReplyVer13 implements OFStatsReply {
     }
 
     @Override
-    public OFStatsReply.Builder createBuilder() {
-        return new OFWparamsStatsReplyVer13.Builder();
+    public OFWparamsStatsReply.Builder createBuilder() {
+        return new Builder();
     }
 
     public static OFMessage.Builder builder() {
@@ -178,14 +193,29 @@ public class OFWparamsStatsReplyVer13 implements OFStatsReply {
                             throw new OFParseError("Wrong statsType: Expected=OFStatsType.WPARAMS(21), got="+statsType);
                         Set<OFStatsReplyFlags> flags = OFStatsReplyFlagsSerializerVer13.readFrom(bb);
                         bb.skipBytes(4);
+                        byte wparmsType = bb.readByte();
+                        if (!(OFWparamsStatsType .DEVICES.ordinal() <= wparmsType && wparmsType <= OFWparamsStatsType .INFOS.ordinal()))
+                            throw new OFParseError("Wrong wparamsType: got=" + wparmsType);
+
+                        String targetDevice = null;
+                        if (wparmsType != OFWparamsStatsType .DEVICES.ordinal()) {
+                            byte[] bytes = new byte[20];
+                            bb.readBytes(bytes);
+                            try{
+                                targetDevice = new String(bytes, "UTF-8");
+                            }catch (Exception e){
+                                throw new OFParseError("Wrong targetDevice: "+e.toString());
+                            }
+                        }
+
                         byte[] bytes = new byte[bb.readableBytes()];
                         bb.readBytes(bytes);
                         try{
                             String data = new String(bytes, "UTF-8");
-                            OFWparamsStatsReplyVer13 msg = new OFWparamsStatsReplyVer13(xid, flags, data);
+                            OFWparamsStatsReplyVer13 msg = new OFWparamsStatsReplyVer13(xid, OFWparamsStatsType .values()[wparmsType], targetDevice, data);
                             return msg;
                         }catch (Exception e){
-                            throw new OFParseError("Wrong statsType: Expected=OFStatsType.WPARAMS(21), got="+e.toString());
+                            throw new OFParseError("Wrong data: "+e.toString());
                         }
 
                     }
@@ -194,14 +224,13 @@ public class OFWparamsStatsReplyVer13 implements OFStatsReply {
         }
     }
 
-    static class Builder implements OFStatsReply.Builder {
+    static class Builder implements OFWparamsStatsReply.Builder {
         private long xid;
         private Set<OFStatsReplyFlags> flags = DEFAULT_FLAGS;
         private boolean flagsSet = true;
+        private OFWparamsStatsType wparamsType = DEFAULT_WPARMS;
+        private String targetDevice = "";
         private String data = "";
-
-        Builder() {
-        }
 
         public OFVersion getVersion() {
             return OFVersion.OF_13;
@@ -231,7 +260,26 @@ public class OFWparamsStatsReplyVer13 implements OFStatsReply {
         }
 
         @Override
-        public OFStatsReply.Builder setFlags(Set set) {
+        public OFWparamsStatsType getWparamsStatsType () { return wparamsType; }
+
+        @Override
+        public Builder setWparamsStatsType (OFWparamsStatsType wparamsType) {
+            this.wparamsType = wparamsType;
+            return this;
+        }
+
+        @Override
+        public String getTargetDevice() {
+            return null;
+        }
+
+        @Override
+        public OFWparamsStatsReply.Builder setTargetDevice(String deviceName) {
+            return null;
+        }
+
+        @Override
+        public Builder setFlags(Set set) {
             this.flags = set;
             this.flagsSet = true;
             return this;
@@ -242,7 +290,7 @@ public class OFWparamsStatsReplyVer13 implements OFStatsReply {
         }
 
         public OFWparamsStatsReplyVer13 build() {
-            return new OFWparamsStatsReplyVer13(xid, flags, data);
+            return new OFWparamsStatsReplyVer13(xid, wparamsType, targetDevice, data);
         }
     }
 }
