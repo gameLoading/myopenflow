@@ -194,7 +194,7 @@ public class OFWparamsStatsReplyVer13 implements OFWparamsStatsReply {
                         Set<OFStatsReplyFlags> flags = OFStatsReplyFlagsSerializerVer13.readFrom(bb);
                         bb.skipBytes(4);
                         byte wparmsType = bb.readByte();
-                        if (!(OFWparamsStatsType .DEVICES.ordinal() <= wparmsType && wparmsType <= OFWparamsStatsType .INFOS.ordinal()))
+                        if (!(OFWparamsStatsType .DEVICES.ordinal() <= wparmsType && wparmsType <= OFWparamsStatsType .ASSOCICATED.ordinal()))
                             throw new OFParseError("Wrong wparamsType: got=" + wparmsType);
 
                         String targetDevice = null;
@@ -212,7 +212,7 @@ public class OFWparamsStatsReplyVer13 implements OFWparamsStatsReply {
                         bb.readBytes(bytes);
                         try{
                             String data = new String(bytes, "UTF-8");
-                            OFWparamsStatsReplyVer13 msg = new OFWparamsStatsReplyVer13(xid, OFWparamsStatsType .values()[wparmsType], targetDevice, data);
+                            OFWparamsStatsReplyVer13 msg = new OFWparamsStatsReplyVer13(xid, OFWparamsStatsType.values()[wparmsType], targetDevice, data);
                             return msg;
                         }catch (Exception e){
                             throw new OFParseError("Wrong data: "+e.toString());
