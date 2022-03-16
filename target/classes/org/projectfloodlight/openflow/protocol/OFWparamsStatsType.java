@@ -12,5 +12,11 @@ package org.projectfloodlight.openflow.protocol;
 public enum OFWparamsStatsType {
      DEVICES,
      INFOS,
-     ASSOCICATED;
+     ASSOCICATED,
+     UCIS,
+     FREQLIST,
+     TXPOWERLIST,
+     COUNTRYLIST,
+     SCAN,
+     SURVEY;
 }

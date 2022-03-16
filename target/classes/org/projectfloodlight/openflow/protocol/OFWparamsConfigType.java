@@ -10,6 +10,8 @@
 package org.projectfloodlight.openflow.protocol;
 
 public enum OFWparamsConfigType {
+     RESET,
      SSID,
-     TXPOWER
+     TXPOWER,
+     UCIs
 }

@@ -70,6 +70,10 @@ public class OFFactoryVer13 implements OFFactory {
         return new OFWparamsStatsRequestVer13.Builder().setXid(nextXid());
     }
 
+    public OFWparamsGetConfigRequest.Builder buildWparamsGetConfigRequest() {
+        return new OFWparamsGetConfigRequestVer13.Builder().setXid(nextXid());
+    }
+
     public OFAggregateStatsReply.Builder buildAggregateStatsReply() {
         return new OFAggregateStatsReplyVer13.Builder().setXid(nextXid());
     }
