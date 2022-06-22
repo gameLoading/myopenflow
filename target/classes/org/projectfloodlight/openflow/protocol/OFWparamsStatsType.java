@@ -18,5 +18,7 @@ public enum OFWparamsStatsType {
      TXPOWERLIST,
      COUNTRYLIST,
      SCAN,
-     SURVEY;
+     SURVEY,
+     SYSTEM_INFO,
+     SYSTEM_BOARD;
 }
