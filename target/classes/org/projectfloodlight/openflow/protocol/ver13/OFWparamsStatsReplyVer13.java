@@ -194,7 +194,7 @@ public class OFWparamsStatsReplyVer13 implements OFWparamsStatsReply {
                         Set<OFStatsReplyFlags> flags = OFStatsReplyFlagsSerializerVer13.readFrom(bb);
                         bb.skipBytes(4);
                         byte wparmsType = bb.readByte();
-                        if (!(OFWparamsStatsType .DEVICES.ordinal() <= wparmsType && wparmsType <= OFWparamsStatsType.SURVEY.ordinal()))
+                        if (!(OFWparamsStatsType .DEVICES.ordinal() <= wparmsType && wparmsType <= OFWparamsStatsType.values().length+1))
                             throw new OFParseError("Wrong wparamsType: got=" + wparmsType);
 
                         String targetDevice = null;
